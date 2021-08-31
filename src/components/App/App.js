@@ -2,21 +2,15 @@ import '../App/App.css';
 import React, { Component } from 'react';
 import shortid from 'shortid';
 
-// import Section from '../Section';
-// import FeedbackOptions from '../FeedbackOptions';
-// import Statistics from '../Statistics';
+import initialContact from '../data/start-data.json';
+import ContactForm from '../ContactForm';
+import Filter from '../Filter';
+import ContactList from '../ContactList';
 
 class App extends Component {
   state = {
-    contact: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contact: initialContact,
     filter: '',
-    name: '',
-    number: '',
   };
 
   formSubmitHandler = ({ name, number }) => {
@@ -25,9 +19,12 @@ class App extends Component {
       name,
       number,
     };
-    console.log(cont);
-    // this.setState({contact} => {
-    //       const contact = [...contact, cont];
+
+    const checkName = Object.values({ name })[0];
+    if (this.state.contact.some(item => item.name === `${checkName}`)) {
+      alert(`${checkName} is already in contacts`);
+      return;
+    }
     this.setState(prevState => {
       const contact = [...prevState.contact, cont];
       return {
@@ -40,15 +37,6 @@ class App extends Component {
     console.log('Arr', this.state.contact);
   };
 
-  handleChange = event => {
-    const { name, value } = event.currentTarget;
-    console.log(event.currentTarget);
-    // используем вычисляемые св-ва
-    this.setState({
-      [name]: value,
-    });
-  };
-
   changeFilter = e => {
     console.log(e.currentTarget.value);
     this.setState({
@@ -56,21 +44,13 @@ class App extends Component {
     });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    const { name, number } = this.state;
-    console.log(`
-      name: ${name}
-      number: ${number}
-    `);
-    this.formSubmitHandler({ ...this.state });
-    this.reset();
+  onDeleteCont = id => {
+    console.log(id);
+    this.setState(prevState => ({
+      contact: prevState.contact.filter(con => con.id !== id),
+    }));
   };
-
-  reset = () => {
-    this.setState({ name: '', number: '' });
-  };
-
+  // filter создаёт НОВЫЙ массив, в который войдут только те элементы arr, для которых вызов callback(item, i, arr) возвратит true.
   render() {
     const normalizedFilter = this.state.filter.toLowerCase();
     const visibleContact = this.state.contact.filter(con =>
@@ -80,49 +60,12 @@ class App extends Component {
       <div className="container">
         <h1>Phonebook</h1>
         <br />
-        <form onSubmit={this.handleSubmit}>
-          Name
-          <br />
-          <input
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
-            required
-            value={this.state.name}
-            onChange={this.handleChange}
-          />
-          <br />
-          Number
-          <br />
-          <input
-            type="tel"
-            name="number"
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-            required
-            value={this.state.number}
-            onChange={this.handleChange}
-          />
-          <br />
-          <button type="submit">Add contact</button>
-        </form>
-        <br />
-        <lable>
-          Find contacts by name
-          <br />
-          <input type="text" value={this.state.filter} onChange={this.changeFilter} />
-        </lable>
+        <ContactForm formSubmitHandler={this.formSubmitHandler} />
         <br />
         <h2>Contacts</h2>
-        <ul>
-          {/* was: this.state.contact */}
-          {visibleContact.map(({ name, number }) => (
-            <li key={shortid.generate()}>
-              {name}:<span>{number}</span>
-            </li>
-          ))}
-        </ul>
+        <Filter value={this.state.filter} onChange={this.changeFilter} />
+        <br />
+        <ContactList visibleContact={visibleContact} onDeleteCont={this.onDeleteCont} />
       </div>
     );
   }
