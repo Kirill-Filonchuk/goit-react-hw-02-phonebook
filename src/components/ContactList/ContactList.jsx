@@ -1,13 +1,14 @@
 import React from 'react';
-// import shortid from 'shortid';
+import s from './ContactList.module.css'
+
 
 const ContactList = ({visibleContact, onDeleteCont}) => (
   
-    <ul>
+    <ul className={s.list}>
         {visibleContact.map(({id, name, number }) => (
-            <li key={id}>
+            <li key={id} className={s.item}>
                 {name}:<span>{number}</span>
-                <button type="button" onClick={()=>onDeleteCont(id)}>Delete</button>
+                <button type="button" onClick={()=>onDeleteCont(id)}className={s.btnForm}>Delete</button>
             </li>
         ))}
     </ul>

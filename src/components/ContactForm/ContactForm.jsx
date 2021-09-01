@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-// import shortid from 'shortid';
+import s from './ContactForm.module.css'
+  
 class Form extends Component {
     state = {
      name: '',
@@ -8,7 +9,7 @@ class Form extends Component {
     
  handleChange = event => {
     const { name, value } = event.currentTarget;
-    console.log(event.currentTarget);
+    // console.log(event.currentTarget);
     // используем вычисляемые св-ва
     this.setState({
       [name]: value,
@@ -17,11 +18,11 @@ class Form extends Component {
     
       handleSubmit = e => {
     e.preventDefault();
-    const { name, number } = this.state;
-    console.log(`
-      name: ${name}
-      number: ${number}
-    `);
+    // const { name, number } = this.state;
+    // console.log(`
+    //   name: ${name}
+    //   number: ${number}
+    // `);
     this.props.formSubmitHandler({ ...this.state });
     this.reset();
   };
@@ -32,9 +33,9 @@ class Form extends Component {
     
     render() {
         return (
-             <form onSubmit={this.handleSubmit}>
+             <form onSubmit={this.handleSubmit} className={s.form}>
           Name
-          <br />
+          
           <input
             type="text"
             name="name"
@@ -44,9 +45,9 @@ class Form extends Component {
             value={this.state.name}
             onChange={this.handleChange}
           />
-          <br />
+         
           Number
-          <br />
+         
           <input
             type="tel"
             name="number"
@@ -56,8 +57,8 @@ class Form extends Component {
             value={this.state.number}
             onChange={this.handleChange}
           />
-          <br />
-          <button type="submit">Add contact</button>
+          
+          <button type="submit" className={s.btnForm}>Add contact</button>
         </form>
         )
     }
