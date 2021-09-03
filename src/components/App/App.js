@@ -2,14 +2,14 @@ import '../App/App.css';
 import React, { Component } from 'react';
 import shortid from 'shortid';
 
-import initialContact from '../data/start-data.json';
+import initialContact from '../../data/start-data.json';
 import ContactForm from '../ContactForm';
 import Filter from '../Filter';
 import ContactList from '../ContactList';
 
 class App extends Component {
   state = {
-    contact: initialContact,
+    contacts: initialContact,
     filter: '',
   };
 
@@ -20,21 +20,18 @@ class App extends Component {
       number,
     };
 
-    const checkName = Object.values({ name })[0].toLowerCase();
-    if (this.state.contact.some(item => item.name.toLowerCase() === `${checkName}`)) {
-      alert(`${Object.values({ name })[0]} is already in contacts`);
+    const checkName = cont.name.toLowerCase();
+    if (this.state.contacts.some(item => item.name.toLowerCase() === `${checkName}`)) {
+      alert(`${cont.name} is already in contacts`);
       return;
     }
     this.setState(prevState => {
-      const contact = [...prevState.contact, cont];
+      const contacts = [...prevState.contacts, cont];
       return {
-        contact,
-        filter: '',
-        name: '',
-        number: '',
+        contacts,
       };
     });
-    // console.log('Arr', this.state.contact);
+    // console.log('Arr', this.state.contacts);
   };
 
   changeFilter = e => {
@@ -47,14 +44,14 @@ class App extends Component {
   onDeleteCont = id => {
     // console.log(id);
     this.setState(prevState => ({
-      contact: prevState.contact.filter(con => con.id !== id),
+      contacts: prevState.contacts.filter(con => con.id !== id),
     }));
   };
   // filter создаёт НОВЫЙ массив, в который войдут только те элементы arr, для которых вызов callback(item, i, arr) возвратит true.
 
   visibleContact = () => {
     const normalizedFilter = this.state.filter.toLowerCase();
-    const visibleContact = this.state.contact.filter(con =>
+    const visibleContact = this.state.contacts.filter(con =>
       con.name.toLowerCase().includes(normalizedFilter),
     );
     return visibleContact;
@@ -62,7 +59,7 @@ class App extends Component {
 
   render() {
     // const normalizedFilter = this.state.filter.toLowerCase();
-    // const visibleContact = this.state.contact.filter(con =>
+    // const visibleContact = this.state.contacts.filter(con =>
     //   con.name.toLowerCase().includes(normalizedFilter),
     // );
     return (
